@@ -39,13 +39,16 @@ se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
 
+default_limit = 1000
+sys.setrecursionlimit(default_limit*10)
 
 def new_controller():
     """
         Se crea una instancia del controlador
     """
     #TODO: Llamar la función del controlador donde se crean las estructuras de datos
-    pass
+    control = controller.new_controller()
+    return control
 
 
 def print_menu():
@@ -67,7 +70,7 @@ def load_data(control):
     Carga los datos
     """
     #TODO: Realizar la carga de datos
-    pass
+    return controller.load_data(control)
 
 
 def print_data(control, id):
@@ -82,7 +85,15 @@ def print_req_1(control):
         Función que imprime la solución del Requerimiento 1 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 1
-    pass
+    fecha_inicial = input("Ingrese la fecha inicial: ")
+    fecha_final = input("Ingrese la fecha final: ")
+    rq1 = controller.req_1(control, fecha_inicial, fecha_final)
+    print("El total de ofertas publicadas entre ", fecha_inicial, " y ", fecha_final, " es ", lt.size(rq1[0][0]))
+    print(tabulate(lt.iterator(rq1[0][1]),headers= "keys", tablefmt="grid"))
+
+    tiempo = f"{rq1[1]:.3f}"
+    print("Tiempo: ", tiempo, "ms")
+
 
 
 def print_req_2(control):
@@ -98,7 +109,16 @@ def print_req_3(control):
         Función que imprime la solución del Requerimiento 3 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 3
-    pass
+    numero_ofertas = int(input("Ingrese el número de ofertas a consultar: "))
+    codigo_pais = input("Ingrese el codigo del pais a consultar: ")
+    experticia = input("Ingrese el nivel de experticia a consultar: ")
+    rq3 = controller.req_3(control, numero_ofertas, codigo_pais, experticia)
+    print("El número total de ofertas laborales publicadas para ", codigo_pais, " que requieren un nivel de experiencia ", experticia, " es ", lt.size(rq3[0]))
+    print(tabulate(lt.iterator(rq3[0]),headers= "keys", tablefmt="grid"))
+
+    tiempo = f"{rq3[1]:.3f}"
+    print("Tiempo: ", tiempo, "ms")
+    
 
 
 def print_req_4(control):
@@ -157,6 +177,13 @@ if __name__ == "__main__":
         if int(inputs) == 1:
             print("Cargando información de los archivos ....\n")
             data = load_data(control)
+            print("Se han cargado",data[0], "trabajos")            
+            # for oferta in lt.iterator(data[1]): 
+            #     controller.remove_data(oferta, ["street", "address_text", "marker_icon", "workplace_type", "company_url", "company_size", 
+            #                                     "remote_interview", "open_to_hire_ukrainians", "id", "display_offer", "longitude", "latitude"])
+            print(tabulate(lt.iterator(data[1]),headers="keys", tablefmt = "grid"))
+            tiempo = f"{data[2]:.3f}"
+            print("Tiempo: ", tiempo, "ms")
         elif int(inputs) == 2:
             print_req_1(control)
 

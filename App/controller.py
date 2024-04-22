@@ -36,27 +36,61 @@ def new_controller():
     Crea una instancia del modelo
     """
     #TODO: Llamar la función del modelo que crea las estructuras de datos
-    pass
+    control = {
+        "model": None
+    }
+    control["model"] = model.new_data_structs()
+    return control
 
 
 # Funciones para la carga de datos
 
-def load_data(control, filename):
+def load_data(control):
     """
     Carga los datos del reto
     """
     # TODO: Realizar la carga de datos
-    pass
+    catalog = control['model']
+    start_time = get_time()
+
+    file = cf.data_dir + '10-por-jobs.csv'
+    input_file = csv.DictReader(open(file, encoding='utf-8'),delimiter=";")
+    for jobs in input_file:
+        model.add_data_jobs(catalog, jobs)
+
+    file2 = cf.data_dir + "10-por-employments_types.csv"
+    input_file2 = csv.DictReader(open(file2, encoding="utf-8"),delimiter=";")
+    for employments_types in input_file2:
+        model.add_data_employments_types(catalog,employments_types)
+
+    file3 = cf.data_dir + "10-por-multilocations.csv"
+    input_file3 = csv.DictReader(open(file3, encoding="utf-8"),delimiter=";")
+    for multilocations in input_file3:
+        model.add_data_multilocations(catalog,multilocations)
+ 
+    file4 = cf.data_dir + "10-por-skills.csv"
+    input_file4 = csv.DictReader(open(file4, encoding="utf-8"),delimiter=";")
+    for multilocations in input_file4:
+        model.add_data_skills(catalog,multilocations)
+    
+    end_time = get_time()
+    tiempo = delta_time(start_time, end_time)
+    
+    return model.data_size_jobs(catalog), model.first_last_mapa(catalog["mapa_jobs"], 3), tiempo
 
 
 # Funciones de ordenamiento
 
-def sort(control):
+def sort(lista, funcion_sort):
     """
     Ordena los datos del modelo
     """
     #TODO: Llamar la función del modelo para ordenar los datos
-    pass
+    model.sort(lista, funcion_sort)
+
+def remove_data(oferta, columnas):
+    for i in columnas: 
+        model.delete_data(oferta, i)
 
 
 # Funciones de consulta sobre el catálogo
@@ -69,12 +103,16 @@ def get_data(control, id):
     pass
 
 
-def req_1(control):
+def req_1(control, fecha_inicial, fecha_final):
     """
     Retorna el resultado del requerimiento 1
     """
     # TODO: Modificar el requerimiento 1
-    pass
+    start_time = get_time()
+    rq1 = model.req_1(control["model"], fecha_inicial, fecha_final)
+    end_time = get_time()
+    tiempo = delta_time(start_time, end_time)
+    return rq1, tiempo
 
 
 def req_2(control):
@@ -85,12 +123,16 @@ def req_2(control):
     pass
 
 
-def req_3(control):
+def req_3(control, numero_ofertas, codigo_pais, experticia):
     """
     Retorna el resultado del requerimiento 3
     """
     # TODO: Modificar el requerimiento 3
-    pass
+    start_time = get_time()
+    rq3 = model.req_3(control["model"], numero_ofertas, codigo_pais, experticia)
+    end_time = get_time()
+    tiempo = delta_time(start_time, end_time)
+    return rq3, tiempo
 
 
 def req_4(control):

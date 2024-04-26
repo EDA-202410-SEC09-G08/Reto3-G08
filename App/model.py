@@ -57,8 +57,8 @@ def new_data_structs():
     """
     #TODO: Inicializar las estructuras de datos
     catalog = {
-        "lista_jobs": None,
-        "mapa_jobs": None,
+        "mapa_id": None,
+        "jobs": None,
         "multilocations": None,
         "skills": None, 
         "employments_types": None, 
@@ -70,8 +70,11 @@ def new_data_structs():
         "map_req7": None, 
         "map_req8": None
     }
-    catalog["lista_jobs"] = lt.newList(datastructure="SINGLE_LINKED")
-    catalog["mapa_jobs"] = om.newMap(omaptype="BST")
+    catalog["jobs"] = om.newMap(omaptype="BST")
+    catalog["mapa_id"] = mp.newMap(numelements=203564,
+                                   prime=109345121,
+                                   maptype="CHAINING",
+                                   loadfactor=1)
     catalog["skills"] = mp.newMap(numelements=250000,
                                   prime=109345121,
                                   maptype="CHAINING",
@@ -84,10 +87,12 @@ def new_data_structs():
                                           prime=109345121,
                                           maptype="CHAINING",
                                           loadfactor=0.5)
-    catalog["map_req1"] = om.newMap(omaptype="RBT")
+    catalog["map_req1"] = om.newMap(omaptype="RBT",
+                                    cmpfunction=cmpdate)
     catalog["map_req3"] = mp.newMap(numelements= 100,
                                     prime= 109345121,
                                     maptype="CHAINING")
+    catalog["map_req6"] = om.newMap(omaptype="RBT")
     return catalog
 
 
@@ -100,14 +105,19 @@ def add_data(data_structs, data):
     #TODO: Crear la función para agregar elementos a una lista
     pass
 
-def add_data_jobs(data_structs, data): 
+def add_data_jobs(data_structs, data):
+    #Lleno el mapa de id
+    mp.put(data_structs["mapa_id"], data["id"], data)
+
+    #Lleno el mapa de jobs 
     data["published_at"] = datetime.strptime(data["published_at"],"%Y-%m-%dT%H:%M:%S.%fZ")
-    lt.addLast(data_structs["lista_jobs"], data)
-    cargar_mapa(om, data_structs["mapa_jobs"], data["published_at"], data)
+    lista = cargar_mapa(om, data_structs["jobs"], data["published_at"], lt.newList())
+    lt.addLast(lista, data)
 
     #Lleno el mapa del req 1
     data["published_at"] = datetime.strptime(datetime.strftime(data["published_at"],"%Y-%m-%d"), "%Y-%m-%d")
-    cargar_mapa(om, data_structs["map_req1"], data["published_at"], data)
+    lista = cargar_mapa(om, data_structs["map_req1"], data["published_at"], lt.newList())
+    lt.addLast(lista, data)
 
     #Lleno mapa req 3
     mapa_paises = data_structs["map_req3"]
@@ -117,29 +127,80 @@ def add_data_jobs(data_structs, data):
                                                                    prime=109345121,
                                                                    maptype="PROBING",
                                                                    loadfactor=0.5))
-    mapa_ofertas = cargar_mapa(mp, mapa_experticia, experticia, om.newMap(omaptype="RBT"))
-    cargar_mapa(om, mapa_ofertas, data["published_at"], data)
-    #print(mapa_ofertas)
-
+    arbol_ofertas = cargar_mapa(mp, mapa_experticia, experticia, om.newMap(omaptype="RBT"))
+    lista = cargar_mapa(om, arbol_ofertas, data["published_at"], lt.newList())
+    lt.addLast(lista, data)
 
 def add_data_skills(data_structs, data):
-    cargar_mapa(mp, data_structs["skills"], data["id"], data)
+    lista = cargar_mapa(mp, data_structs["skills"], data["id"], lt.newList())
+    lt.addLast(lista, data)
+
+    job = me.getValue(mp.get(data_structs["mapa_id"], data["id"]))
+
+    if "skills" not in job.keys(): 
+        job["skills"] = lt.newList(datastructure="ARRAY_LIST")
+    else: 
+        job["skills"] = job["skills"]
+    lt.addLast(job["skills"], data)
+
 
 def add_data_employments_types(data_structs, data):
-    cargar_mapa(mp, data_structs["employments_types"], data["id"], data)
-    
+    lista = cargar_mapa(mp, data_structs["employments_types"], data["id"], lt.newList())
+    lt.addLast(lista, data)
+
+    job = me.getValue(mp.get(data_structs["mapa_id"], data["id"]))
+    salario_min = data["salary_from"]
+    if salario_min != "":
+        salario_min = convertir_salario(float(salario_min), data["currency_salary"])
+        if "salary_from" not in job.keys(): 
+            job["salary_from"] = float("inf")
+        if salario_min < job["salary_from"]: 
+            job["salary_from"] = salario_min
+    else: 
+        salario_min = 0
+        job["salary_from"] = salario_min
+
+    #Lleno mapa req 6
+    arbol_fechas6 = data_structs["map_req6"]
+    arbol_salarios_minimos = cargar_mapa(om, arbol_fechas6, job["published_at"], om.newMap(omaptype="RBT"))
+    lista_jobs = cargar_mapa(om, arbol_salarios_minimos, salario_min, lt.newList("ARRAY_LIST"))
+    lt.addLast(lista_jobs, job)
+
+    # salario_max = data["salary_to"]
+    # if salario_max != "":
+    #     salario_max = convertir_salario(float(salario_max), data["currency_salary"])
+    #     if "salary_to" not in job.keys(): 
+    #         job["salary_to"] = float("inf")
+    #     if salario_min < job["salary_to"]: 
+    #         job["salary_to"] = salario_min
+
 def add_data_multilocations(data_structs, data):
-    cargar_mapa(mp, data_structs["multilocations"], data["id"], data)
+    lista = cargar_mapa(mp, data_structs["multilocations"], data["id"], lt.newList())
+    lt.addLast(lista, data)
 
 
+#Función para convertir monedas
+def convertir_salario(salario, currency): 
+    if currency == "usd": 
+        return salario
+    elif currency == "eur": 
+        return salario*1.07
+    elif currency == "pln": 
+        return salario*0.25 
+    elif currency == "chf":
+        return salario*1.1
+    elif currency == "gbp": 
+        return salario*1.24
+    else: 
+        return 0
+
+
+#Función para llenar un mapa de tipo mp u om.
 def cargar_mapa(tipo_mapa, mapa, llave, valor): 
     if not tipo_mapa.contains(mapa, llave): 
-        lista_interna = lt.newList(datastructure="SINGLE_LINKED")
-        lt.addLast(lista_interna, valor)
-        tipo_mapa.put(mapa, llave, lista_interna)
+        tipo_mapa.put(mapa, llave, valor)
     else: 
-        lista_interna = me.getValue(tipo_mapa.get(mapa, llave))
-        lt.addLast(lista_interna, valor)
+        valor = me.getValue(tipo_mapa.get(mapa, llave))
     return valor
 
 
@@ -170,9 +231,14 @@ def data_size(data_structs):
     #TODO: Crear la función para obtener el tamaño de una lista
     pass
 
-def data_size_jobs(data_structs):
-    return lt.size(data_structs["lista_jobs"])
 
+#Función para calcular el total de ofertas en un arbol.
+def total_ofertas_mapa(mapa): 
+    lista_valores = om.valueSet(mapa)
+    lista = convertir_lista_de_listas(lista_valores)
+    return lt.size(lista)
+
+#Función que retorna en una lista los primeros y últimos n elementos de una lista ingresada por parámetro
 def first_last(lista, n): 
     first = lt.subList(lista, 1, n)
     last = lt.subList(lista, lt.size(lista)-n+1, n)
@@ -183,59 +249,22 @@ def first_last(lista, n):
         lt.addLast(rta, element)
     return rta
 
+
+#Función que retorna una lista con los primeros n elementos de una lista ingresada por parámetro
 def first(lista, n): 
     return lt.subList(lista, 1, n)
 
+#Función que retorna una lista con los últimos n elementos de una lista ingresada por parámetro
+def last(lista, n):
+    return lt.subList(lista, lt.size(lista)-n+1, n)
+
+
+#Función que retorna en una lista los primeros y últimos n elementos de un mapa
 def first_last_mapa(mapa, n): 
-    first = lt.newList(datastructure="ARRAY_LIST")
-    last = lt.newList(datastructure="ARRAY_LIST")
-    llave_minima = om.minKey(mapa)
-    valor_minimo = me.getValue(om.get(mapa, llave_minima))
-    if lt.size(valor_minimo) >= n: 
-        first = lt.subList(valor_minimo, 1, n)
-    else: 
-        first = valor_minimo
-        tamano = n-lt.size(first)
-        while tamano != 0: 
-            om.deleteMin(mapa)
-            llave_minima = om.minKey(mapa)
-            valor_minimo = me.getValue(om.get(mapa, llave_minima))
-            if lt.size(valor_minimo) >= n: 
-                sublista_minima = lt.subList(valor_minimo, 1, tamano)
-                for element in lt.iterator(sublista_minima):
-                    lt.addFirst(first, element)
-                tamano = 0
-            else: 
-                for element in lt.iterator(valor_minimo): 
-                    lt.addFirst(first, element)
-                    tamano -= 1
-    llave_maxima = om.maxKey(mapa)
-    valor_maximo = me.getValue(om.get(mapa, llave_maxima))
-    if lt.size(valor_maximo) >= n: 
-        last = lt.subList(valor_maximo, 1, n)
-    else: 
-        last = valor_maximo
-        n = n-lt.size(last)
-        while n != 0: 
-            om.deleteMax(mapa)
-            llave_maxima = om.maxKey(mapa)
-            valor_maximo = me.getValue(om.get(mapa, llave_maxima))
-            if lt.size(valor_maximo) >= n: 
-                sublista_maxima = lt.subList(valor_maximo, 1, n)
-                for element in lt.iterator(sublista_maxima):
-                    lt.addLast(last, element)
-                n = 0
-            else: 
-                for element in lt.iterator(valor_maximo): 
-                    lt.addLast(last, element)
-                    n -= 1
-    
-    rta = lt.newList(datastructure="ARRAY_LIST")
-    for element in lt.iterator(last):
-        lt.addLast(rta, element)
-    for element in lt.iterator(first):
-        lt.addLast(rta, element)
-    return rta
+    valores = om.valueSet(mapa)
+    lista = convertir_lista_de_listas(valores)
+    respuesta = first_last(lista, n)
+    return respuesta
 
 
 def req_1(data_structs, fecha_inicial, fecha_final):
@@ -244,47 +273,17 @@ def req_1(data_structs, fecha_inicial, fecha_final):
     """
     # TODO: Realizar el requerimiento 1
     mapa_fechas = data_structs["map_req1"]
-    mapa_salario = data_structs["employments_types"]
-    mapa_habilidades = data_structs["skills"]
     fecha_inicial = datetime.strptime(fecha_inicial,"%Y-%m-%d")
     fecha_final = datetime.strptime(fecha_final,"%Y-%m-%d")
 
-    lista_valores = om.values(mapa_fechas, fecha_inicial, fecha_final)
-    rq1 = lt.newList(datastructure="ARRAY_LIST")
-    for lista in lt.iterator(lista_valores): 
-        for oferta in lt.iterator(lista):
-            id = oferta["id"] #2 salarios diferentes dependiendo del type. Cual se toma? Para salario se toma el promedio de salarios?
-            salario_from = lt.getElement(me.getValue(mp.get(mapa_salario, id)), 0)["salary_from"]
-            salario_to = lt.getElement(me.getValue(mp.get(mapa_salario, id)), 0)["salary_to"]
-            if salario_from != "" and salario_to != "":
-                salario = (int(salario_from) + int(salario_to))/2
-            elif salario_from == "" and salario_to != "": 
-                salario = int(salario_to)
-            elif salario_from != "" and salario_to == "": 
-                salario = int(salario_from)
-            else: 
-                salario = 0 #Debo imprimir unknown?
-            oferta["salary"] = salario
-            oferta["skills"] =  ""
-            lista_habilidades = me.getValue(mp.get(mapa_habilidades, id))
-            numero_habilidades = lt.size(lista_habilidades)
-            for i in range(0, numero_habilidades): 
-                habilidad = lt.getElement(lista_habilidades, i)["name"]
-                if habilidad == "": 
-                    habilidad = "Unknown"
-                if i != numero_habilidades-1:
-                    oferta["skills"] += habilidad
-                    oferta["skills"] += ", "
-                else: 
-                    oferta["skills"] += habilidad
-            lt.addLast(rq1, oferta)
-    merg.sort(rq1, sort_ofertas1)
+    lista_valores = om.values(mapa_fechas, fecha_final, fecha_inicial)
+    lista = convertir_lista_de_listas(lista_valores)
 
-    if lt.size(rq1) > 10: 
-        rq1_first_last = first_last(rq1, 5)
-    else: rq1_first_last = rq1
+    total_ofertas = lt.size(lista)
+    if total_ofertas > 10: 
+        lista = first_last(lista, 5)
 
-    return rq1, rq1_first_last
+    return total_ofertas, lista
 
 
 def req_2(data_structs):
@@ -295,51 +294,25 @@ def req_2(data_structs):
     pass
 
 
-# def req_3(data_structs, numero_ofertas, codigo_pais, experticia):
-#     """
-#     Función que soluciona el requerimiento 3
-#     """
-#     # TODO: Realizar el requerimiento 3
-#     mapa_paises = data_structs["map_req3"]
-#     mapa_salario = data_structs["employments_types"]
-#     mapa_habilidades = data_structs["skills"]
+def req_3(data_structs, numero_ofertas, codigo_pais, experticia):
+    """
+    Función que soluciona el requerimiento 3
+    """
+    # TODO: Realizar el requerimiento 3
+    mapa_paises = data_structs["map_req3"]
 
-#     mapa_pais_exp = lt.getElement(me.getValue(mp.get(mapa_paises, codigo_pais)), 0) 
-#     mapa_ofertas_pais_exp = lt.getElement(me.getValue(mp.get(mapa_pais_exp, experticia)), 0)
+    mapa_pais_exp = me.getValue(mp.get(mapa_paises, codigo_pais))
+    arbol_ofertas_pais_exp = me.getValue(mp.get(mapa_pais_exp, experticia))
 
-#     lista_valores = om.valueSet(mapa_ofertas_pais_exp)
-#     rq3 = lt.newList(datastructure="SINGLE_LINKED")
-#     for lista in lt.iterator(lista_valores): 
-#         for oferta in lt.iterator(lista):
-#             id = oferta["id"] #2 salarios diferentes dependiendo del type. Cual se toma?
-#             salario_from = lt.getElement(me.getValue(mp.get(mapa_salario, id)), 0)["salary_from"]
+    lista_valores = om.valueSet(arbol_ofertas_pais_exp)    
+    lista_final = convertir_lista_de_listas(lista_valores)
+    total_ofertas = lt.size(lista_final)
 
-#             if salario_from != "":
-#                 oferta["salary_from"] = int(salario_from)
-#             else: 
-#                 oferta["salary_from"] = 0 #Debo imprimir unknown?
-            
-#             oferta["skills"] =  ""
-#             lista_habilidades = me.getValue(mp.get(mapa_habilidades, id))
-#             numero_habilidades = lt.size(lista_habilidades)
-#             for i in range(0, numero_habilidades): 
-#                 habilidad = lt.getElement(lista_habilidades, i)["name"]
-#                 if habilidad == "": 
-#                     habilidad = "Unknown"
-#                 if i != numero_habilidades-1:
-#                     oferta["skills"] += habilidad
-#                     oferta["skills"] += ", "
-#                 else: 
-#                     oferta["skills"] += habilidad
-#             lt.addLast(rq3, oferta)
-#     merg.sort(rq3, sort_ofertas3)
+    if total_ofertas > numero_ofertas:
+        lista_final = last(lista_final, numero_ofertas)
+    merg.sort(lista_final, sort_date_salario)
 
-#     # if lt.size(rq3) > numero_ofertas: 
-#     #     rq3_first = first(rq3, numero_ofertas)
-#     # else: 
-#     #     rq3_first = rq3
-
-#     return rq3 #, rq3_first
+    return total_ofertas, lista_final
 
 
 def req_4(data_structs):
@@ -358,12 +331,47 @@ def req_5(data_structs):
     pass
 
 
-def req_6(data_structs):
+def req_6(data_structs, numero_ciudades, fecha_inicial, fecha_final, salario_min_inicial, salario_min_final):
     """
     Función que soluciona el requerimiento 6
     """
     # TODO: Realizar el requerimiento 6
-    pass
+    arbol_fechas = data_structs["map_req6"]
+    fecha_inicial = datetime.strptime(fecha_inicial,"%Y-%m-%d")
+    fecha_final = datetime.strptime(fecha_final,"%Y-%m-%d")
+
+    lista_fecha_salario = lt.newList(datastructure="ARRAY_LIST")
+    mapa_ciudades = mp.newMap(numelements=1000,
+                              prime = 109345121,
+                              maptype="CHAINING",
+                              loadfactor=1)
+    lista_arboles_salarios = om.values(arbol_fechas, fecha_inicial, fecha_final)
+    ciudad_mayor = None
+    max_ofertas = 0
+    for arbol_salarios in lt.iterator(lista_arboles_salarios): 
+        lista_valores = om.values(arbol_salarios, salario_min_inicial, salario_min_final)
+        lista_jobs = convertir_lista_de_listas(lista_valores)
+        for job in lt.iterator(lista_jobs): 
+            lt.addLast(lista_fecha_salario, job)
+            lista_ofertas_ciudad = cargar_mapa(mp, mapa_ciudades, job["city"], lt.newList(datastructure="ARRAY_LIST"))
+            lt.addLast(lista_ofertas_ciudad, job)
+            if lt.size(lista_ofertas_ciudad) > max_ofertas: 
+                max_ofertas = lt.size(lista_ofertas_ciudad)
+                ciudad_mayor = job["city"]
+
+    total_ofertas = lt.size(lista_fecha_salario)
+    lista_ciudades = mp.keySet(mapa_ciudades)
+    total_ciudades = lt.size(lista_ciudades)
+    merg.sort(lista_ciudades, sort_city)
+    if lt.size(lista_ciudades) > numero_ciudades: 
+        lista_ciudades = first(lista_ciudades, numero_ciudades)
+
+    lista_jobs_mayor = me.getValue(mp.get(mapa_ciudades, ciudad_mayor))
+    merg.sort(lista_jobs_mayor, sort_date_salario)
+    if lt.size(lista_jobs_mayor) > 10: 
+        lista_jobs_mayor = first_last(lista_jobs_mayor, 5)
+
+    return total_ofertas, total_ciudades, lista_ciudades, lista_jobs_mayor
 
 
 def req_7(data_structs):
@@ -380,6 +388,14 @@ def req_8(data_structs):
     """
     # TODO: Realizar el requerimiento 8
     pass
+
+
+def convertir_lista_de_listas(lista_mayor): 
+    lista_final = lt.newList(datastructure="ARRAY_LIST")
+    for lista in lt.iterator(lista_mayor): 
+        for data in lt.iterator(lista): 
+            lt.addLast(lista_final, data)
+    return lista_final
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
@@ -414,10 +430,16 @@ def sort(lista, funcion_sort):
     """
     merg.sort(lista, funcion_sort)
 
-
-def sort_jobs(data_1, data_2): 
-    return data_1["published_at"] > data_2["published_at"]
     
+def cmpdate(key1, key2):
+    if key1 == key2: 
+        return 0
+    elif key1 > key2: 
+        return -1
+    else: 
+        return 1
+
+
 def sort_ofertas1(data_1, data_2): 
     if data_1["published_at"] > data_2["published_at"]: 
         return True
@@ -426,7 +448,7 @@ def sort_ofertas1(data_1, data_2):
     else: 
         return False
     
-def sort_ofertas3(data_1, data_2): 
+def sort_date_salario(data_1, data_2): 
     if data_1["published_at"] > data_2["published_at"]: 
         return True
     elif data_1["published_at"] == data_2["published_at"]: 
@@ -434,8 +456,5 @@ def sort_ofertas3(data_1, data_2):
     else: 
         return False
     
-
-
-#Función para eliminar información de la oferta
-def delete_data(oferta, columna):
-    oferta.pop(columna)
+def sort_city(data_1, data_2): 
+    return data_1 < data_2

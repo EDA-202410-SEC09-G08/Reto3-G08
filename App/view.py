@@ -88,12 +88,16 @@ def print_req_1(control):
     fecha_inicial = input("Ingrese la fecha inicial: ")
     fecha_final = input("Ingrese la fecha final: ")
     rq1 = controller.req_1(control, fecha_inicial, fecha_final)
-    print("El total de ofertas publicadas entre ", fecha_inicial, " y ", fecha_final, " es ", lt.size(rq1[0][0]))
-    print(tabulate(lt.iterator(rq1[0][1]),headers= "keys", tablefmt="grid"))
+    print("El total de ofertas publicadas entre ", fecha_inicial, " y ", fecha_final, " es ", rq1[0][0])
+
+    lista = rq1[0][1]
+    titulos = ["published_at", "title", "company_name", "experience_level", "country_code", "city", "company_size", "workplace_type", "skills"]
+    lista = tabular_sublista(lista, "skills", ["name", "level"])
+    lista = filtrar_titulos(lista, titulos)
+    print(tabulate(lt.iterator(lista),headers= "keys", tablefmt="grid"))
 
     tiempo = f"{rq1[1]:.3f}"
     print("Tiempo: ", tiempo, "ms")
-
 
 
 def print_req_2(control):
@@ -113,12 +117,16 @@ def print_req_3(control):
     codigo_pais = input("Ingrese el codigo del pais a consultar: ")
     experticia = input("Ingrese el nivel de experticia a consultar: ")
     rq3 = controller.req_3(control, numero_ofertas, codigo_pais, experticia)
-    print("El número total de ofertas laborales publicadas para ", codigo_pais, " que requieren un nivel de experiencia ", experticia, " es ", lt.size(rq3[0]))
-    print(tabulate(lt.iterator(rq3[0]),headers= "keys", tablefmt="grid"))
+    print("El número total de ofertas laborales publicadas para ", codigo_pais, " que requieren un nivel de experiencia ", experticia, " es ", rq3[0][0])
+
+    lista = rq3[0][1]
+    titulos = ["published_at", "title", "company_name", "experience_level", "country_code", "city", "company_size", "workplace_type", "salary_from", "skills"]
+    lista = tabular_sublista(lista, "skills", ["name", "level"])
+    lista = filtrar_titulos(lista, titulos)
+    print(tabulate(lt.iterator(lista),headers= "keys", tablefmt="grid"))
 
     tiempo = f"{rq3[1]:.3f}"
     print("Tiempo: ", tiempo, "ms")
-    
 
 
 def print_req_4(control):
@@ -142,7 +150,26 @@ def print_req_6(control):
         Función que imprime la solución del Requerimiento 6 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 6
-    pass
+    numero_ciudades = int(input("Ingrese el numero de ciudades a consultar: "))
+    fecha_inicial = input("Ingrese la fecha inicial: ")
+    fecha_final = input("Ingrese la fecha final: ")
+    salario_min_inicial = float(input("Ingrese el límite inferior del salario mínimo ofertado: "))
+    salario_min_final = float(input("Ingrese el límite superior del salario mínimo ofertado: "))
+    rq6 = controller.req_6(control, numero_ciudades, fecha_inicial, fecha_final, salario_min_inicial, salario_min_final)
+    print("El número total de ofertas laborales publicadas entre ", fecha_inicial, " y ", fecha_final, " y que su salario mínimo ofertado esté entre ", salario_min_final, " y ", salario_min_final, " es ", rq6[0][0])
+    print("El número total de ciudades que cumplan con las especificaciones es ", rq6[0][1])
+    print("Las ", numero_ciudades, " ciudades que cumplen las condiciones especificadas ordenadas alfabéticamente son ")
+    for ciudad in lt.iterator(rq6[0][2]): 
+        print(ciudad)
+    
+    lista = rq6[0][3]
+    titulos = ["published_at", "title", "company_name", "experience_level", "country_code", "city", "company_size", "workplace_type", "salary_from", "skills"]
+    lista = tabular_sublista(lista, "skills", ["name", "level"])
+    lista = filtrar_titulos(lista, titulos)
+    print(tabulate(lt.iterator(lista),headers= "keys", tablefmt="grid"))
+
+    tiempo = f"{rq6[1]:.3f}"
+    print("Tiempo: ", tiempo, "ms")
 
 
 def print_req_7(control):
@@ -159,6 +186,26 @@ def print_req_8(control):
     """
     # TODO: Imprimir el resultado del requerimiento 8
     pass
+
+
+#Función que crea un diccionario copia con solo los títulos necesarios
+def filtrar_titulos(lista, titulos): 
+    lista_auxiliar = lt.newList()
+    for data in lt.iterator(lista): 
+        diccionario_copia = {}
+        for titulo in titulos:
+            diccionario_copia[titulo] = data[titulo]
+        lt.addLast(lista_auxiliar, diccionario_copia)
+    return lista_auxiliar
+
+#Función que permite hacer una tabla que irá dentro de otra
+def tabular_sublista(lista, llave, titulos):
+    lista_auxiliar = lt.newList()
+    for data in lt.iterator(lista): 
+        diccionario_copia = data.copy()
+        diccionario_copia[llave] = tabulate(lt.iterator(filtrar_titulos(diccionario_copia[llave], titulos)), headers= "keys", tablefmt="grid")
+        lt.addLast(lista_auxiliar, diccionario_copia)
+    return lista_auxiliar
 
 
 # Se crea el controlador asociado a la vista
@@ -178,10 +225,9 @@ if __name__ == "__main__":
             print("Cargando información de los archivos ....\n")
             data = load_data(control)
             print("Se han cargado",data[0], "trabajos")            
-            # for oferta in lt.iterator(data[1]): 
-            #     controller.remove_data(oferta, ["street", "address_text", "marker_icon", "workplace_type", "company_url", "company_size", 
-            #                                     "remote_interview", "open_to_hire_ukrainians", "id", "display_offer", "longitude", "latitude"])
-            print(tabulate(lt.iterator(data[1]),headers="keys", tablefmt = "grid"))
+            titulos = ["published_at", "title", "company_name", "experience_level", "country_code", "city"]
+            lista = filtrar_titulos(data[1], titulos)
+            print(tabulate(lt.iterator(lista),headers="keys", tablefmt = "grid"))
             tiempo = f"{data[2]:.3f}"
             print("Tiempo: ", tiempo, "ms")
         elif int(inputs) == 2:

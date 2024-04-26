@@ -76,7 +76,7 @@ def load_data(control):
     end_time = get_time()
     tiempo = delta_time(start_time, end_time)
     
-    return model.data_size_jobs(catalog), model.first_last_mapa(catalog["mapa_jobs"], 3), tiempo
+    return model.total_ofertas_mapa(catalog["jobs"]), model.first_last_mapa(catalog["jobs"], 3), tiempo
 
 
 # Funciones de ordenamiento
@@ -86,11 +86,7 @@ def sort(lista, funcion_sort):
     Ordena los datos del modelo
     """
     #TODO: Llamar la función del modelo para ordenar los datos
-    model.sort(lista, funcion_sort)
-
-def remove_data(oferta, columnas):
-    for i in columnas: 
-        model.delete_data(oferta, i)
+    pass
 
 
 # Funciones de consulta sobre el catálogo
@@ -150,12 +146,16 @@ def req_5(control):
     # TODO: Modificar el requerimiento 5
     pass
 
-def req_6(control):
+def req_6(control, numero_ciudades, fecha_inicial, fecha_final, salario_min_inicial, salario_min_final):
     """
     Retorna el resultado del requerimiento 6
     """
     # TODO: Modificar el requerimiento 6
-    pass
+    start_time = get_time()
+    rq6 = model.req_6(control["model"], numero_ciudades, fecha_inicial, fecha_final, salario_min_inicial, salario_min_final)
+    end_time = get_time()
+    tiempo = delta_time(start_time, end_time)
+    return rq6, tiempo
 
 
 def req_7(control):

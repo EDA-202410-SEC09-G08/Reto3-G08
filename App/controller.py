@@ -29,7 +29,7 @@ import tracemalloc
 """
 El controlador se encarga de mediar entre la vista y el modelo.
 """
-
+csv.field_size_limit(2147483647)
 
 def new_controller():
     """
@@ -67,7 +67,7 @@ def load_data(control):
     input_file3 = csv.DictReader(open(file3, encoding="utf-8"),delimiter=";")
     for multilocations in input_file3:
         model.add_data_multilocations(catalog,multilocations)
- 
+
     file4 = cf.data_dir + "10-por-skills.csv"
     input_file4 = csv.DictReader(open(file4, encoding="utf-8"),delimiter=";")
     for multilocations in input_file4:
@@ -158,12 +158,16 @@ def req_6(control, numero_ciudades, fecha_inicial, fecha_final, salario_min_inic
     return rq6, tiempo
 
 
-def req_7(control):
+def req_7(control, anio, codigo_pais, propiedad):
     """
     Retorna el resultado del requerimiento 7
     """
     # TODO: Modificar el requerimiento 7
-    pass
+    start_time = get_time()
+    rq7 = model.req_7(control["model"], anio, codigo_pais, propiedad)
+    end_time = get_time()
+    tiempo = delta_time(start_time, end_time)
+    return rq7, tiempo
 
 
 def req_8(control):

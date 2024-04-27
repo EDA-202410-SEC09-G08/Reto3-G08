@@ -40,7 +40,7 @@ operación solicitada
 """
 
 default_limit = 1000
-sys.setrecursionlimit(default_limit*10)
+sys.setrecursionlimit(default_limit*100)
 
 def new_controller():
     """
@@ -177,7 +177,29 @@ def print_req_7(control):
         Función que imprime la solución del Requerimiento 7 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 7
-    pass
+    anio = int(input("Ingrese el año: "))
+    codigo_pais = input("Ingrese el código del pais: ")
+    propiedad = input("Ingrese la propiedad de conteo (experticia, ubicacion, o habilidad): ")
+    rq7 = controller.req_7(control, anio, codigo_pais, propiedad)
+    print("El número de ofertas laborales publicadas en ", anio, " es ", rq7[0][0])
+    print("El número de ofertas laborales publicadas utilizados para crear el gráfico de barras de la propiedad es ", rq7[0][1])
+    print("Valor mínimo de la propiedad consultada en el gráfico de barras es ", rq7[0][2][0], " y el valor máximo es ", rq7[0][2][1])
+
+    lista = rq7[0][3]
+    titulos = ["published_at", "title", "company_name", "country_code", "city", "company_size", "salary_from"]
+    if propiedad == "experticia": 
+        titulos.append("experience_level")
+    elif propiedad == "ubicacion": 
+        titulos.append("workplace_type")
+    else: 
+        titulos.append("skills")
+        lista = tabular_sublista(lista, "skills", ["name", "level"])
+
+    lista = filtrar_titulos(lista, titulos)
+    print(tabulate(lt.iterator(lista),headers= "keys", tablefmt="grid"))
+
+    tiempo = f"{rq7[1]:.3f}"
+    print("Tiempo: ", tiempo, "ms")
 
 
 def print_req_8(control):
@@ -185,7 +207,7 @@ def print_req_8(control):
         Función que imprime la solución del Requerimiento 8 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 8
-    pass
+    return opcion
 
 
 #Función que crea un diccionario copia con solo los títulos necesarios
@@ -252,6 +274,12 @@ if __name__ == "__main__":
             print_req_7(control)
 
         elif int(inputs) == 9:
+            print("1- Ejecutar Requerimiento 1")
+            print("3- Ejecutar Requerimiento 3")
+            print("6- Ejecutar Requerimiento 6")
+            print("7- Ejecutar Requerimiento 7")
+            opcion = int(input("Seleccione una opción para continuar: "))
+
             print_req_8(control)
 
         elif int(inputs) == 0:

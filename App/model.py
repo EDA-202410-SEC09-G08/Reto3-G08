@@ -41,6 +41,8 @@ from DISClib.Algorithms.Sorting import mergesort as merg
 from DISClib.Algorithms.Sorting import quicksort as quk
 assert cf
 from datetime import datetime
+from matplotlib import pyplot as plt
+
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá
@@ -63,9 +65,7 @@ def new_data_structs():
         "skills": None, 
         "employments_types": None, 
         "map_req1": None,
-        "map_req3": None, 
-        "map_req4": None,
-        "map_req5": None, 
+        "map_req3": None,
         "map_req6": None,
         "map_req7": None, 
         "map_req8": None
@@ -93,8 +93,8 @@ def new_data_structs():
                                     prime= 109345121,
                                     maptype="CHAINING")
     catalog["map_req6"] = om.newMap(omaptype="RBT")
+    catalog["map_req7"] = mp.newMap(numelements=4)
     return catalog
-
 
 # Funciones para agregar informacion al modelo
 
@@ -131,6 +131,29 @@ def add_data_jobs(data_structs, data):
     lista = cargar_mapa(om, arbol_ofertas, data["published_at"], lt.newList())
     lt.addLast(lista, data)
 
+    #Lleno mapa req 7
+    mapa_anios = data_structs["map_req7"]
+    anio = int(data["published_at"].year)
+    
+    valor = {"mapa_paises": mp.newMap(numelements=100),
+             "total_ofertas": 0}
+    diccionario_anio = cargar_mapa(mp, mapa_anios, anio, valor)
+    mapa_paises = diccionario_anio["mapa_paises"]
+    diccionario_anio["total_ofertas"] += 1
+    diccionario_mapas = cargar_mapa(mp, mapa_paises, data["country_code"], newDict_req7())
+    lista_jobs_experticia = cargar_mapa(mp, diccionario_mapas["experticia"], data["experience_level"], lt.newList("ARRAY_LIST"))
+    lt.addLast(lista_jobs_experticia, data)
+    lista_jobs_ubicacion = cargar_mapa(mp, diccionario_mapas["ubicacion"], data["workplace_type"], lt.newList("ARRAY_LIST"))
+    lt.addLast(lista_jobs_ubicacion, data)
+
+def newDict_req7(): 
+    diccionario = {}
+    diccionario["experticia"] = mp.newMap(numelements=3)
+    diccionario["ubicacion"] = mp.newMap(numelements=4)
+    diccionario["habilidad"] = mp.newMap(numelements=100)
+    return diccionario
+
+
 def add_data_skills(data_structs, data):
     lista = cargar_mapa(mp, data_structs["skills"], data["id"], lt.newList())
     lt.addLast(lista, data)
@@ -142,6 +165,15 @@ def add_data_skills(data_structs, data):
     else: 
         job["skills"] = job["skills"]
     lt.addLast(job["skills"], data)
+
+    #Lleno mapa req 7
+    mapa_anios = data_structs["map_req7"]
+    anio = int(job["published_at"].year)
+    diccionario_anio = me.getValue(mp.get(mapa_anios, anio))
+    mapa_paises = diccionario_anio["mapa_paises"]
+    diccionario_mapas = me.getValue(mp.get(mapa_paises, job["country_code"]))
+    lista_jobs_habilidades = cargar_mapa(mp, diccionario_mapas["habilidad"], data["name"], lt.newList("ARRAY_LIST"))
+    lt.addLast(lista_jobs_habilidades, job)
 
 
 def add_data_employments_types(data_structs, data):
@@ -165,14 +197,6 @@ def add_data_employments_types(data_structs, data):
     arbol_salarios_minimos = cargar_mapa(om, arbol_fechas6, job["published_at"], om.newMap(omaptype="RBT"))
     lista_jobs = cargar_mapa(om, arbol_salarios_minimos, salario_min, lt.newList("ARRAY_LIST"))
     lt.addLast(lista_jobs, job)
-
-    # salario_max = data["salary_to"]
-    # if salario_max != "":
-    #     salario_max = convertir_salario(float(salario_max), data["currency_salary"])
-    #     if "salary_to" not in job.keys(): 
-    #         job["salary_to"] = float("inf")
-    #     if salario_min < job["salary_to"]: 
-    #         job["salary_to"] = salario_min
 
 def add_data_multilocations(data_structs, data):
     lista = cargar_mapa(mp, data_structs["multilocations"], data["id"], lt.newList())
@@ -374,12 +398,48 @@ def req_6(data_structs, numero_ciudades, fecha_inicial, fecha_final, salario_min
     return total_ofertas, total_ciudades, lista_ciudades, lista_jobs_mayor
 
 
-def req_7(data_structs):
+def req_7(data_structs, anio, codigo_pais, propiedad):
     """
     Función que soluciona el requerimiento 7
     """
     # TODO: Realizar el requerimiento 7
-    pass
+    mapa_anios = data_structs["map_req7"]
+    diccionario_anio = me.getValue(mp.get(mapa_anios, anio))
+    mapa_paises = diccionario_anio["mapa_paises"]
+
+    diccionario_mapas = me.getValue(mp.get(mapa_paises, codigo_pais))
+    mapa_propiedad = diccionario_mapas[propiedad]
+
+    total_ofertas_anio = diccionario_anio["total_ofertas"]
+    total_ofertas_propiedad = 0
+    x = []
+    y = []
+    valor_min = float("inf")
+    valor_max = 0
+    lista_final = lt.newList("ARRAY_LIST")
+    for llave in lt.iterator(mp.keySet(mapa_propiedad)):
+        lista_jobs_propiedad = me.getValue(mp.get(mapa_propiedad, llave))
+        total_ofertas_propiedad += lt.size(lista_jobs_propiedad)
+        x.append(llave)
+        y.append(lt.size(lista_jobs_propiedad))
+        if lt.size(lista_jobs_propiedad) > valor_max: 
+            valor_max = lt.size(lista_jobs_propiedad)
+        if lt.size(lista_jobs_propiedad) < valor_min: 
+            valor_min = lt.size(lista_jobs_propiedad)
+        lt.addLast(lista_final, lista_jobs_propiedad)
+    if len(x) > 10:
+        x = x[0:9]
+        y = y[0:9]
+    fig,ax = plt.subplots()
+    ax.barh(x, y)
+    ax.invert_yaxis()
+    plt.show()
+    lista_final = convertir_lista_de_listas(lista_final)
+
+    if lt.size(lista_final) > 10: 
+        lista_final = first_last(lista_final, 5)
+
+    return total_ofertas_anio, total_ofertas_propiedad, (valor_min, valor_max), lista_final
 
 
 def req_8(data_structs):

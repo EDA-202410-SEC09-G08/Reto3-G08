@@ -94,6 +94,7 @@ def new_data_structs():
                                     maptype="CHAINING")
     catalog["map_req6"] = om.newMap(omaptype="RBT")
     catalog["map_req7"] = mp.newMap(numelements=4)
+    catalog["map_req4"] = mp.newMap(numelements=150)
     return catalog
 
 # Funciones para agregar informacion al modelo
@@ -145,6 +146,13 @@ def add_data_jobs(data_structs, data):
     lt.addLast(lista_jobs_experticia, data)
     lista_jobs_ubicacion = cargar_mapa(mp, diccionario_mapas["ubicacion"], data["workplace_type"], lt.newList("ARRAY_LIST"))
     lt.addLast(lista_jobs_ubicacion, data)
+
+    #Lleno mapa req 4 
+    mapa_ciudades = data_structs["map_req4"]
+    mapa_ubicacion =  cargar_mapa(mp,mapa_ciudades,data["city"],mp.newMap(numelements=4))
+    lista_jobs = cargar_mapa(mp,mapa_ubicacion,data["workplace_type"],lt.newList(datastructure="ARRAY_LIST"))
+    lt.addLast(lista_jobs,data)
+
 
 def newDict_req7(): 
     diccionario = {}
@@ -339,13 +347,19 @@ def req_3(data_structs, numero_ofertas, codigo_pais, experticia):
     return total_ofertas, lista_final
 
 
-def req_4(data_structs):
+def req_4(data_structs, numero_ofertas, ciudad, ubicacion):
     """
     Función que soluciona el requerimiento 4
     """
     # TODO: Realizar el requerimiento 4
-    pass
-
+    mapa_ciudades = data_structs["map_req4"]
+    mapa_ubicacion = me.getValue(mp.get(mapa_ciudades, ciudad))
+    lista_jobs = me.getValue(mp.get(mapa_ubicacion, ubicacion))
+    merg.sort(lista_jobs,sort_date_salario)
+    total_ofertas = lt.size(lista_jobs)
+    if total_ofertas>numero_ofertas:
+        lista_jobs= lt.subList(lista_jobs,1,numero_ofertas)
+    return total_ofertas, lista_jobs
 
 def req_5(data_structs):
     """

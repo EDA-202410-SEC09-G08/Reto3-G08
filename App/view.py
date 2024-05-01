@@ -134,8 +134,20 @@ def print_req_4(control):
         Función que imprime la solución del Requerimiento 4 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 4
-    pass
+    numero_ofertas = int(input("Ingrese el número de ofertas a consultar: "))
+    ciudad = input("Ingrese la ciudad a consultar: ")
+    ubicacion = input("Ingrese la ubicacion a consultar: ")
+    rq4 = controller.req_4(control, numero_ofertas, ciudad, ubicacion)
+    lista = rq4[0][1]
+    titulos = ["published_at", "title", "company_name", "experience_level", "country_code", "city", "company_size", "workplace_type", "salary_from", "skills"]
+    lista = tabular_sublista(lista,"skills", ["name","level"])
+    lista = filtrar_titulos(lista, titulos)
+    print(tabulate(lt.iterator(lista),headers= "keys", tablefmt="grid"))
+    print("El total de ofertas fue",rq4[0][0])
 
+    tiempo = f"{rq4[1]:.3f}"
+    print("Tiempo: ", tiempo, "ms")
+    
 
 def print_req_5(control):
     """

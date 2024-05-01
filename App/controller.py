@@ -131,12 +131,17 @@ def req_3(control, numero_ofertas, codigo_pais, experticia):
     return rq3, tiempo
 
 
-def req_4(control):
+def req_4(control,numero_ofertas, ciudad, ubicacion):
     """
     Retorna el resultado del requerimiento 4
     """
     # TODO: Modificar el requerimiento 4
-    pass
+    start_time = get_time()
+    rq4 = model.req_4(control["model"], numero_ofertas, ciudad, ubicacion)
+    end_time = get_time()
+    tiempo = delta_time(start_time, end_time)
+    return rq4, tiempo
+
 
 
 def req_5(control):

@@ -66,6 +66,7 @@ def new_data_structs():
         "employments_types": None, 
         "map_req1": None,
         "map_req3": None,
+        "map_req4": None,
         "map_req6": None,
         "map_req7": None, 
         "map_req8": None
@@ -92,9 +93,9 @@ def new_data_structs():
     catalog["map_req3"] = mp.newMap(numelements= 100,
                                     prime= 109345121,
                                     maptype="CHAINING")
+    catalog["map_req4"] = mp.newMap(numelements=150)
     catalog["map_req6"] = om.newMap(omaptype="RBT")
     catalog["map_req7"] = mp.newMap(numelements=4)
-    catalog["map_req4"] = mp.newMap(numelements=150)
     return catalog
 
 # Funciones para agregar informacion al modelo

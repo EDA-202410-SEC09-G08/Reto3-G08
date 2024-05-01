@@ -143,7 +143,6 @@ def req_4(control,numero_ofertas, ciudad, ubicacion):
     return rq4, tiempo
 
 
-
 def req_5(control):
     """
     Retorna el resultado del requerimiento 5

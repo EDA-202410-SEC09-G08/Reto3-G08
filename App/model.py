@@ -432,7 +432,7 @@ def req_7(data_structs, anio, codigo_pais, propiedad):
         y = y[0:9]
     fig,ax = plt.subplots()
     ax.barh(x, y)
-    ax.invert_yaxis()
+    # ax.invert_yaxis()
     plt.show()
     lista_final = convertir_lista_de_listas(lista_final)
 

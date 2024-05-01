@@ -207,7 +207,7 @@ def print_req_8(control):
         Función que imprime la solución del Requerimiento 8 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 8
-    return opcion
+    pass
 
 
 #Función que crea un diccionario copia con solo los títulos necesarios

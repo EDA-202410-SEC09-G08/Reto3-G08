@@ -42,6 +42,7 @@ from DISClib.Algorithms.Sorting import quicksort as quk
 assert cf
 from datetime import datetime
 from matplotlib import pyplot as plt
+import folium
 
 
 """
@@ -59,9 +60,8 @@ def new_data_structs():
     """
     #TODO: Inicializar las estructuras de datos
     catalog = {
-        "mapa_id": None,
         "jobs": None,
-        "multilocations": None,
+        "mapa_id": None,
         "skills": None, 
         "employments_types": None, 
         "map_req1": None,
@@ -69,9 +69,9 @@ def new_data_structs():
         "map_req4": None,
         "map_req6": None,
         "map_req7": None, 
-        "map_req8": None
     }
-    catalog["jobs"] = om.newMap(omaptype="BST")
+    catalog["jobs"] = om.newMap(omaptype="BST",
+                                cmpfunction=cmpdate)
     catalog["mapa_id"] = mp.newMap(numelements=203564,
                                    prime=109345121,
                                    maptype="CHAINING",
@@ -84,10 +84,6 @@ def new_data_structs():
                                               prime=109345121,
                                               maptype="CHAINING",
                                               loadfactor=0.5)
-    catalog["multilocations"] =  mp.newMap(numelements=250000,
-                                          prime=109345121,
-                                          maptype="CHAINING",
-                                          loadfactor=0.5)
     catalog["map_req1"] = om.newMap(omaptype="RBT",
                                     cmpfunction=cmpdate)
     catalog["map_req3"] = mp.newMap(numelements= 100,
@@ -99,13 +95,6 @@ def new_data_structs():
     return catalog
 
 # Funciones para agregar informacion al modelo
-
-def add_data(data_structs, data):
-    """
-    Función para agregar nuevos elementos a la lista
-    """
-    #TODO: Crear la función para agregar elementos a una lista
-    pass
 
 def add_data_jobs(data_structs, data):
     #Lleno el mapa de id
@@ -126,9 +115,7 @@ def add_data_jobs(data_structs, data):
     pais = data["country_code"]
     experticia = data["experience_level"]
     mapa_experticia = cargar_mapa(mp, mapa_paises, pais, mp.newMap(numelements=4,
-                                                                   prime=109345121,
-                                                                   maptype="PROBING",
-                                                                   loadfactor=0.5))
+                                                                   maptype="PROBING"))
     arbol_ofertas = cargar_mapa(mp, mapa_experticia, experticia, om.newMap(omaptype="RBT"))
     lista = cargar_mapa(om, arbol_ofertas, data["published_at"], lt.newList())
     lt.addLast(lista, data)
@@ -136,7 +123,6 @@ def add_data_jobs(data_structs, data):
     #Lleno mapa req 7
     mapa_anios = data_structs["map_req7"]
     anio = int(data["published_at"].year)
-    
     valor = {"mapa_paises": mp.newMap(numelements=100),
              "total_ofertas": 0}
     diccionario_anio = cargar_mapa(mp, mapa_anios, anio, valor)
@@ -154,7 +140,6 @@ def add_data_jobs(data_structs, data):
     lista_jobs = cargar_mapa(mp,mapa_ubicacion,data["workplace_type"],lt.newList(datastructure="ARRAY_LIST"))
     lt.addLast(lista_jobs,data)
 
-
 def newDict_req7(): 
     diccionario = {}
     diccionario["experticia"] = mp.newMap(numelements=3)
@@ -164,9 +149,7 @@ def newDict_req7():
 
 
 def add_data_skills(data_structs, data):
-    lista = cargar_mapa(mp, data_structs["skills"], data["id"], lt.newList())
-    lt.addLast(lista, data)
-
+    #Calculo el salario mínimo de cada una de las ofertas y las agrego a la información de cada una de las ofertas.
     job = me.getValue(mp.get(data_structs["mapa_id"], data["id"]))
 
     if "skills" not in job.keys(): 
@@ -186,9 +169,7 @@ def add_data_skills(data_structs, data):
 
 
 def add_data_employments_types(data_structs, data):
-    lista = cargar_mapa(mp, data_structs["employments_types"], data["id"], lt.newList())
-    lt.addLast(lista, data)
-
+    #Calculo las skills de cada una de las ofertas y las agrego a la información de cada una de las ofertas.
     job = me.getValue(mp.get(data_structs["mapa_id"], data["id"]))
     salario_min = data["salary_from"]
     if salario_min != "":
@@ -207,11 +188,6 @@ def add_data_employments_types(data_structs, data):
     lista_jobs = cargar_mapa(om, arbol_salarios_minimos, salario_min, lt.newList("ARRAY_LIST"))
     lt.addLast(lista_jobs, job)
 
-def add_data_multilocations(data_structs, data):
-    lista = cargar_mapa(mp, data_structs["multilocations"], data["id"], lt.newList())
-    lt.addLast(lista, data)
-
-
 #Función para convertir monedas
 def convertir_salario(salario, currency): 
     if currency == "usd": 
@@ -227,7 +203,6 @@ def convertir_salario(salario, currency):
     else: 
         return 0
 
-
 #Función para llenar un mapa de tipo mp u om.
 def cargar_mapa(tipo_mapa, mapa, llave, valor): 
     if not tipo_mapa.contains(mapa, llave): 
@@ -235,35 +210,6 @@ def cargar_mapa(tipo_mapa, mapa, llave, valor):
     else: 
         valor = me.getValue(tipo_mapa.get(mapa, llave))
     return valor
-
-
-# Funciones para creacion de datos
-
-def new_data(id, info):
-    """
-    Crea una nueva estructura para modelar los datos
-    """
-    #TODO: Crear la función para estructurar los datos
-    pass
-
-
-# Funciones de consulta
-
-def get_data(data_structs, id):
-    """
-    Retorna un dato a partir de su ID
-    """
-    #TODO: Crear la función para obtener un dato de una lista
-    pass
-
-
-def data_size(data_structs):
-    """
-    Retorna el tamaño de la lista de datos
-    """
-    #TODO: Crear la función para obtener el tamaño de una lista
-    pass
-
 
 #Función para calcular el total de ofertas en un arbol.
 def total_ofertas_mapa(mapa): 
@@ -282,7 +228,6 @@ def first_last(lista, n):
         lt.addLast(rta, element)
     return rta
 
-
 #Función que retorna una lista con los primeros n elementos de una lista ingresada por parámetro
 def first(lista, n): 
     return lt.subList(lista, 1, n)
@@ -291,7 +236,6 @@ def first(lista, n):
 def last(lista, n):
     return lt.subList(lista, lt.size(lista)-n+1, n)
 
-
 #Función que retorna en una lista los primeros y últimos n elementos de un mapa
 def first_last_mapa(mapa, n): 
     valores = om.valueSet(mapa)
@@ -299,6 +243,8 @@ def first_last_mapa(mapa, n):
     respuesta = first_last(lista, n)
     return respuesta
 
+
+#Funciones pararesolver los requerimientos.
 
 def req_1(data_structs, fecha_inicial, fecha_final):
     """
@@ -319,13 +265,6 @@ def req_1(data_structs, fecha_inicial, fecha_final):
     return total_ofertas, lista
 
 
-def req_2(data_structs):
-    """
-    Función que soluciona el requerimiento 2
-    """
-    # TODO: Realizar el requerimiento 2
-    pass
-
 
 def req_3(data_structs, numero_ofertas, codigo_pais, experticia):
     """
@@ -341,9 +280,9 @@ def req_3(data_structs, numero_ofertas, codigo_pais, experticia):
     lista_final = convertir_lista_de_listas(lista_valores)
     total_ofertas = lt.size(lista_final)
 
-    if total_ofertas > numero_ofertas:
-        lista_final = last(lista_final, numero_ofertas)
     merg.sort(lista_final, sort_date_salario)
+    if total_ofertas > numero_ofertas:
+        lista_final = first(lista_final, numero_ofertas)
 
     return total_ofertas, lista_final
 
@@ -361,13 +300,6 @@ def req_4(data_structs, numero_ofertas, ciudad, ubicacion):
     if total_ofertas>numero_ofertas:
         lista_jobs= lt.subList(lista_jobs,1,numero_ofertas)
     return total_ofertas, lista_jobs
-
-def req_5(data_structs):
-    """
-    Función que soluciona el requerimiento 5
-    """
-    # TODO: Realizar el requerimiento 5
-    pass
 
 
 def req_6(data_structs, numero_ciudades, fecha_inicial, fecha_final, salario_min_inicial, salario_min_final):
@@ -421,7 +353,6 @@ def req_7(data_structs, anio, codigo_pais, propiedad):
     mapa_anios = data_structs["map_req7"]
     diccionario_anio = me.getValue(mp.get(mapa_anios, anio))
     mapa_paises = diccionario_anio["mapa_paises"]
-
     diccionario_mapas = me.getValue(mp.get(mapa_paises, codigo_pais))
     mapa_propiedad = diccionario_mapas[propiedad]
 
@@ -442,12 +373,8 @@ def req_7(data_structs, anio, codigo_pais, propiedad):
         if lt.size(lista_jobs_propiedad) < valor_min: 
             valor_min = lt.size(lista_jobs_propiedad)
         lt.addLast(lista_final, lista_jobs_propiedad)
-    if len(x) > 10:
-        x = x[0:9]
-        y = y[0:9]
     fig,ax = plt.subplots()
     ax.barh(x, y)
-    # ax.invert_yaxis()
     plt.show()
     lista_final = convertir_lista_de_listas(lista_final)
 
@@ -457,14 +384,38 @@ def req_7(data_structs, anio, codigo_pais, propiedad):
     return total_ofertas_anio, total_ofertas_propiedad, (valor_min, valor_max), lista_final
 
 
-def req_8(data_structs):
+def req_8(data_structs, requerimiento, fecha_inicial, fecha_final, numero_ofertas, codigo_pais, experticia, numero_ciudades, salario_min_inicial, salario_min_final, anio, propiedad):
     """
     Función que soluciona el requerimiento 8
     """
     # TODO: Realizar el requerimiento 8
-    pass
+    if requerimiento == 1: 
+        tupla = req_1(data_structs, fecha_inicial, fecha_final)
+        lista_final = tupla[1]
+    elif requerimiento == 3:
+        tupla = req_3(data_structs, numero_ofertas, codigo_pais, experticia)
+        lista_final = tupla[1]
+    elif requerimiento == 6: 
+        tupla = req_6(data_structs, numero_ciudades, fecha_inicial, fecha_final, salario_min_inicial, salario_min_final)
+        lista_final = tupla[3]
+    elif requerimiento == 7:
+        tupla = req_7(data_structs, anio, codigo_pais, propiedad)
+        lista_final = tupla[3]
 
+    m = folium.Map([23, 25], zoom_start=2)
 
+    for oferta in lt.iterator(lista_final): 
+        info = "published at: " + datetime.strftime(oferta["published_at"],"%Y-%m-%d") + " - title: " + oferta["title"] + " - company name: " + oferta["company_name"] + " - country code: " + oferta["country_code"] + " - city: " + oferta["city"] + " - company size: " + oferta["company_size"] + " - experience level: " + oferta["experience_level"]
+        popup = folium.Popup(info, min_width=150, max_width=150)
+        folium.Marker(location=[oferta["latitude"], oferta["longitude"]],
+                      tooltip="Click me!",
+                      popup= popup,
+                      icon=folium.Icon(color="red")).add_to(m)
+    m.save("map.html")
+    return m
+    
+
+#Función que transforma una lista de listas en una lista completa que contiene todos los elementos de las sublistas [[], [], [], []] ---> []
 def convertir_lista_de_listas(lista_mayor): 
     lista_final = lt.newList(datastructure="ARRAY_LIST")
     for lista in lt.iterator(lista_mayor): 
@@ -472,40 +423,7 @@ def convertir_lista_de_listas(lista_mayor):
             lt.addLast(lista_final, data)
     return lista_final
 
-
-# Funciones utilizadas para comparar elementos dentro de una lista
-
-def compare(data_1, data_2):
-    """
-    Función encargada de comparar dos datos
-    """
-    #TODO: Crear función comparadora de la lista
-    pass
-
-# Funciones de ordenamiento
-
-
-def sort_criteria(data_1, data_2):
-    """sortCriteria criterio de ordenamiento para las funciones de ordenamiento
-
-    Args:
-        data1 (_type_): _description_
-        data2 (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    #TODO: Crear función comparadora para ordenar
-    pass
-
-
-def sort(lista, funcion_sort):
-    """
-    Función encargada de ordenar la lista con los datos
-    """
-    merg.sort(lista, funcion_sort)
-
-    
+#Cmp function para ordenar los mapas de mayor a menor
 def cmpdate(key1, key2):
     if key1 == key2: 
         return 0
@@ -514,15 +432,7 @@ def cmpdate(key1, key2):
     else: 
         return 1
 
-
-def sort_ofertas1(data_1, data_2): 
-    if data_1["published_at"] > data_2["published_at"]: 
-        return True
-    elif data_1["published_at"] == data_2["published_at"]: 
-        return data_1["salary"] > data_2["salary"]
-    else: 
-        return False
-    
+#Función para oredenar una lista por fechas y salarios mínimos
 def sort_date_salario(data_1, data_2): 
     if data_1["published_at"] > data_2["published_at"]: 
         return True
@@ -531,5 +441,6 @@ def sort_date_salario(data_1, data_2):
     else: 
         return False
     
+#Función para ordenar las ciudades en orden alfabético
 def sort_city(data_1, data_2): 
     return data_1 < data_2

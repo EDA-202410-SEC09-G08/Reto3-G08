@@ -168,7 +168,7 @@ def print_req_6(control):
     salario_min_inicial = float(input("Ingrese el límite inferior del salario mínimo ofertado: "))
     salario_min_final = float(input("Ingrese el límite superior del salario mínimo ofertado: "))
     rq6 = controller.req_6(control, numero_ciudades, fecha_inicial, fecha_final, salario_min_inicial, salario_min_final)
-    print("El número total de ofertas laborales publicadas entre ", fecha_inicial, " y ", fecha_final, " y que su salario mínimo ofertado esté entre ", salario_min_final, " y ", salario_min_final, " es ", rq6[0][0])
+    print("El número total de ofertas laborales publicadas entre ", fecha_inicial, " y ", fecha_final, " y que su salario mínimo ofertado esté entre ", salario_min_inicial, " y ", salario_min_final, " es ", rq6[0][0])
     print("El número total de ciudades que cumplan con las especificaciones es ", rq6[0][1])
     print("Las ", numero_ciudades, " ciudades que cumplen las condiciones especificadas ordenadas alfabéticamente son ")
     for ciudad in lt.iterator(rq6[0][2]): 
@@ -219,7 +219,60 @@ def print_req_8(control):
         Función que imprime la solución del Requerimiento 8 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 8
-    pass
+    print("1- Ejecutar Requerimiento 1")
+    print("3- Ejecutar Requerimiento 3")
+    print("4- Ejecutar Requerimiento 4")
+    print("6- Ejecutar Requerimiento 6")
+    print("7- Ejecutar Requerimiento 7")
+    requerimiento = int(input("Seleccione una opción para continuar: "))
+    if requerimiento == 1: 
+        fecha_inicial = input("Ingrese la fecha inicial: ")
+        fecha_final = input("Ingrese la fecha final: ")
+        numero_ofertas = 0
+        codigo_pais = ""
+        experticia = ""
+        numero_ciudades = 0
+        salario_min_inicial = 0
+        salario_min_final = 0
+        anio = 0
+        propiedad = ""
+    elif requerimiento == 3: 
+        fecha_inicial = ""
+        fecha_final = ""
+        numero_ofertas = int(input("Ingrese el número de ofertas a consultar: "))
+        codigo_pais = input("Ingrese el codigo del pais a consultar: ")
+        experticia = input("Ingrese el nivel de experticia a consultar: ")
+        numero_ciudades = 0
+        salario_min_inicial = 0
+        salario_min_final = 0
+        anio = 0
+        propiedad = ""
+    elif requerimiento == 6:
+        numero_ciudades = int(input("Ingrese el numero de ciudades a consultar: "))
+        fecha_inicial = input("Ingrese la fecha inicial: ")
+        fecha_final = input("Ingrese la fecha final: ")
+        salario_min_inicial = float(input("Ingrese el límite inferior del salario mínimo ofertado: "))
+        salario_min_final = float(input("Ingrese el límite superior del salario mínimo ofertado: "))
+        numero_ofertas = 0
+        codigo_pais = ""
+        experticia = ""
+        anio = 0
+        propiedad = ""
+    elif requerimiento == 7:
+        anio = int(input("Ingrese el año: "))
+        codigo_pais = input("Ingrese el código del pais: ")
+        propiedad = input("Ingrese la propiedad de conteo (experticia, ubicacion, o habilidad): ")
+        fecha_inicial = ""
+        fecha_final = ""
+        numero_ciudades = 0
+        salario_min_inicial = 0
+        salario_min_final = 0
+        experticia = ""
+        numero_ofertas = 0
+    rq8 = controller.req_8(control, requerimiento, fecha_inicial, fecha_final, numero_ofertas, codigo_pais, experticia, numero_ciudades, salario_min_inicial, salario_min_final, anio, propiedad)
+    print("Se guardó el mapa interactivo.")
+    tiempo = f"{rq8[1]:.3f}"
+    print("Tiempo: ", tiempo, "ms")
 
 
 #Función que crea un diccionario copia con solo los títulos necesarios
@@ -286,12 +339,6 @@ if __name__ == "__main__":
             print_req_7(control)
 
         elif int(inputs) == 9:
-            print("1- Ejecutar Requerimiento 1")
-            print("3- Ejecutar Requerimiento 3")
-            print("6- Ejecutar Requerimiento 6")
-            print("7- Ejecutar Requerimiento 7")
-            opcion = int(input("Seleccione una opción para continuar: "))
-
             print_req_8(control)
 
         elif int(inputs) == 0:

@@ -53,22 +53,17 @@ def load_data(control):
     catalog = control['model']
     start_time = get_time()
 
-    file = cf.data_dir + '10-por-jobs.csv'
+    file = cf.data_dir + 'large-jobs.csv'
     input_file = csv.DictReader(open(file, encoding='utf-8'),delimiter=";")
     for jobs in input_file:
         model.add_data_jobs(catalog, jobs)
 
-    file2 = cf.data_dir + "10-por-employments_types.csv"
+    file2 = cf.data_dir + "large-employments_types.csv"
     input_file2 = csv.DictReader(open(file2, encoding="utf-8"),delimiter=";")
     for employments_types in input_file2:
         model.add_data_employments_types(catalog,employments_types)
 
-    file3 = cf.data_dir + "10-por-multilocations.csv"
-    input_file3 = csv.DictReader(open(file3, encoding="utf-8"),delimiter=";")
-    for multilocations in input_file3:
-        model.add_data_multilocations(catalog,multilocations)
-
-    file4 = cf.data_dir + "10-por-skills.csv"
+    file4 = cf.data_dir + "large-skills.csv"
     input_file4 = csv.DictReader(open(file4, encoding="utf-8"),delimiter=";")
     for multilocations in input_file4:
         model.add_data_skills(catalog,multilocations)
@@ -77,26 +72,6 @@ def load_data(control):
     tiempo = delta_time(start_time, end_time)
     
     return model.total_ofertas_mapa(catalog["jobs"]), model.first_last_mapa(catalog["jobs"], 3), tiempo
-
-
-# Funciones de ordenamiento
-
-def sort(lista, funcion_sort):
-    """
-    Ordena los datos del modelo
-    """
-    #TODO: Llamar la función del modelo para ordenar los datos
-    pass
-
-
-# Funciones de consulta sobre el catálogo
-
-def get_data(control, id):
-    """
-    Retorna un dato por su ID.
-    """
-    #TODO: Llamar la función del modelo para obtener un dato
-    pass
 
 
 def req_1(control, fecha_inicial, fecha_final):
@@ -174,12 +149,16 @@ def req_7(control, anio, codigo_pais, propiedad):
     return rq7, tiempo
 
 
-def req_8(control):
+def req_8(control, requerimiento, fecha_inicial, fecha_final, numero_ofertas, codigo_pais, experticia, numero_ciudades, salario_min_inicial, salario_min_final, anio, propiedad):
     """
     Retorna el resultado del requerimiento 8
     """
     # TODO: Modificar el requerimiento 8
-    pass
+    start_time = get_time()
+    rq8 = model.req_8(control["model"], requerimiento, fecha_inicial, fecha_final, numero_ofertas, codigo_pais, experticia, numero_ciudades, salario_min_inicial, salario_min_final, anio, propiedad)
+    end_time = get_time()
+    tiempo = delta_time(start_time, end_time)
+    return rq8, tiempo
 
 
 # Funciones para medir tiempos de ejecucion

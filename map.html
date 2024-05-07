@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_4b122878cce2f19458c11085bb87d1df {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_4b122878cce2f19458c11085bb87d1df" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_4b122878cce2f19458c11085bb87d1df = L.map(
+                "map_4b122878cce2f19458c11085bb87d1df",
+                {
+                    center: [23.0, 25.0],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 2,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_3ac17ea6313a66c582f20d4bd18657ff = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors", "detectRetina": false, "maxNativeZoom": 19, "maxZoom": 19, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            );
+        
+    
+            tile_layer_3ac17ea6313a66c582f20d4bd18657ff.addTo(map_4b122878cce2f19458c11085bb87d1df);
+        
+    
+            var marker_6c0d1f2d1c1a090b39948d04dab02ce8 = L.marker(
+                [24.7135517, 46.6752957],
+                {}
+            ).addTo(map_4b122878cce2f19458c11085bb87d1df);
+        
+    
+            var icon_0947da7bcce1d9ddb588c409af3e9adf = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "red", "prefix": "glyphicon"}
+            );
+            marker_6c0d1f2d1c1a090b39948d04dab02ce8.setIcon(icon_0947da7bcce1d9ddb588c409af3e9adf);
+        
+    
+        var popup_f4c3401842f8a1c0be8fd43919e93447 = L.popup({"maxWidth": 150, "minWidth": 150});
+
+        
+            
+                var html_c10b1848d843beb155089addc9c84216 = $(`<div id="html_c10b1848d843beb155089addc9c84216" style="width: 100.0%; height: 100.0%;">published at: 2022-04-14 - title: Senior CyberSecurity Engineer - Reloc. to Rijad - company name: IntelligINTS - country code: SA - city: Rijad - company size: Undefined - experience level: senior</div>`)[0];
+                popup_f4c3401842f8a1c0be8fd43919e93447.setContent(html_c10b1848d843beb155089addc9c84216);
+            
+        
+
+        marker_6c0d1f2d1c1a090b39948d04dab02ce8.bindPopup(popup_f4c3401842f8a1c0be8fd43919e93447)
+        ;
+
+        
+    
+    
+            marker_6c0d1f2d1c1a090b39948d04dab02ce8.bindTooltip(
+                `<div>
+                     Click me!
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_6f2da9c5bdfc93b3d414c7e785c55a50 = L.marker(
+                [24.4942437, 54.4068603],
+                {}
+            ).addTo(map_4b122878cce2f19458c11085bb87d1df);
+        
+    
+            var icon_59b89d4a1f05b3b8240376bcc84de052 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "red", "prefix": "glyphicon"}
+            );
+            marker_6f2da9c5bdfc93b3d414c7e785c55a50.setIcon(icon_59b89d4a1f05b3b8240376bcc84de052);
+        
+    
+        var popup_ccdad0a1c47a48c3fb090214981e36f9 = L.popup({"maxWidth": 150, "minWidth": 150});
+
+        
+            
+                var html_87bcfdb119a55663abf079b39bf1be6b = $(`<div id="html_87bcfdb119a55663abf079b39bf1be6b" style="width: 100.0%; height: 100.0%;">published at: 2022-04-14 - title: CyberSecurity Pentester - Reloc. to Abu Dhabi - company name: IntelligINTS - country code: AE - city: Abu Dhabi - company size: Undefined - experience level: senior</div>`)[0];
+                popup_ccdad0a1c47a48c3fb090214981e36f9.setContent(html_87bcfdb119a55663abf079b39bf1be6b);
+            
+        
+
+        marker_6f2da9c5bdfc93b3d414c7e785c55a50.bindPopup(popup_ccdad0a1c47a48c3fb090214981e36f9)
+        ;
+
+        
+    
+    
+            marker_6f2da9c5bdfc93b3d414c7e785c55a50.bindTooltip(
+                `<div>
+                     Click me!
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_0ce51d87045b9cabc58fed0c5c06af70 = L.marker(
+                [48.1652478, 17.0781315],
+                {}
+            ).addTo(map_4b122878cce2f19458c11085bb87d1df);
+        
+    
+            var icon_73f99f141e6eaa73f45548529a3e12fc = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "red", "prefix": "glyphicon"}
+            );
+            marker_0ce51d87045b9cabc58fed0c5c06af70.setIcon(icon_73f99f141e6eaa73f45548529a3e12fc);
+        
+    
+        var popup_19c439c5bf9bf67cf61bba065a848602 = L.popup({"maxWidth": 150, "minWidth": 150});
+
+        
+            
+                var html_94c2c34ec36bc33b69c59f7234dc704b = $(`<div id="html_94c2c34ec36bc33b69c59f7234dc704b" style="width: 100.0%; height: 100.0%;">published at: 2022-04-14 - title: Mid Backend Software Developer - GO - company name: CloudTalk - country code: SK - city: Bratislava - company size: 230 - experience level: mid</div>`)[0];
+                popup_19c439c5bf9bf67cf61bba065a848602.setContent(html_94c2c34ec36bc33b69c59f7234dc704b);
+            
+        
+
+        marker_0ce51d87045b9cabc58fed0c5c06af70.bindPopup(popup_19c439c5bf9bf67cf61bba065a848602)
+        ;
+
+        
+    
+    
+            marker_0ce51d87045b9cabc58fed0c5c06af70.bindTooltip(
+                `<div>
+                     Click me!
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_566ff8df0e124100bf51da0c3316f9ba = L.marker(
+                [48.1485965, 17.1077478],
+                {}
+            ).addTo(map_4b122878cce2f19458c11085bb87d1df);
+        
+    
+            var icon_96f935fec2d0c41ea3d441a6d44ff65a = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "red", "prefix": "glyphicon"}
+            );
+            marker_566ff8df0e124100bf51da0c3316f9ba.setIcon(icon_96f935fec2d0c41ea3d441a6d44ff65a);
+        
+    
+        var popup_31b4b047f826337b8539a2abbf013ac2 = L.popup({"maxWidth": 150, "minWidth": 150});
+
+        
+            
+                var html_a14dafa2475d49b14184c82d050e77d4 = $(`<div id="html_a14dafa2475d49b14184c82d050e77d4" style="width: 100.0%; height: 100.0%;">published at: 2022-04-14 - title: Mid Backend Software Developer - Node.js - company name: CloudTalk - country code: SK - city: Bratislava - company size: 230 - experience level: mid</div>`)[0];
+                popup_31b4b047f826337b8539a2abbf013ac2.setContent(html_a14dafa2475d49b14184c82d050e77d4);
+            
+        
+
+        marker_566ff8df0e124100bf51da0c3316f9ba.bindPopup(popup_31b4b047f826337b8539a2abbf013ac2)
+        ;
+
+        
+    
+    
+            marker_566ff8df0e124100bf51da0c3316f9ba.bindTooltip(
+                `<div>
+                     Click me!
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_40ee3825de3dc4f542b1c80237e01a75 = L.marker(
+                [52.2296756, 21.0122287],
+                {}
+            ).addTo(map_4b122878cce2f19458c11085bb87d1df);
+        
+    
+            var icon_0a7a0b5d764559d3c8bac8d4983629c3 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "red", "prefix": "glyphicon"}
+            );
+            marker_40ee3825de3dc4f542b1c80237e01a75.setIcon(icon_0a7a0b5d764559d3c8bac8d4983629c3);
+        
+    
+        var popup_fd515aca0057f5b69b441c58f3f1cce3 = L.popup({"maxWidth": 150, "minWidth": 150});
+
+        
+            
+                var html_781286346282318e25023eec9fe7b809 = $(`<div id="html_781286346282318e25023eec9fe7b809" style="width: 100.0%; height: 100.0%;">published at: 2022-04-14 - title: Remote Sr/Staff FE Engineer - Angular - company name: Jirav - country code: PL - city: Warszawa - company size: 100 - experience level: senior</div>`)[0];
+                popup_fd515aca0057f5b69b441c58f3f1cce3.setContent(html_781286346282318e25023eec9fe7b809);
+            
+        
+
+        marker_40ee3825de3dc4f542b1c80237e01a75.bindPopup(popup_fd515aca0057f5b69b441c58f3f1cce3)
+        ;
+
+        
+    
+    
+            marker_40ee3825de3dc4f542b1c80237e01a75.bindTooltip(
+                `<div>
+                     Click me!
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_28e895a4a8844587a44af13db2022ed3 = L.marker(
+                [50.06469, 19.9514968],
+                {}
+            ).addTo(map_4b122878cce2f19458c11085bb87d1df);
+        
+    
+            var icon_e15efc2d226686a5d77505060e44f4c0 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "red", "prefix": "glyphicon"}
+            );
+            marker_28e895a4a8844587a44af13db2022ed3.setIcon(icon_e15efc2d226686a5d77505060e44f4c0);
+        
+    
+        var popup_368572341eb1cf6ca83be5c394edf379 = L.popup({"maxWidth": 150, "minWidth": 150});
+
+        
+            
+                var html_e2d39980cee82463e65d40226ab2b373 = $(`<div id="html_e2d39980cee82463e65d40226ab2b373" style="width: 100.0%; height: 100.0%;">published at: 2022-04-13 - title: Product Owner - Cloud Services - company name: Allegro - country code: PL - city: Krakow - company size: 5000 - experience level: mid</div>`)[0];
+                popup_368572341eb1cf6ca83be5c394edf379.setContent(html_e2d39980cee82463e65d40226ab2b373);
+            
+        
+
+        marker_28e895a4a8844587a44af13db2022ed3.bindPopup(popup_368572341eb1cf6ca83be5c394edf379)
+        ;
+
+        
+    
+    
+            marker_28e895a4a8844587a44af13db2022ed3.bindTooltip(
+                `<div>
+                     Click me!
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_a647386b569bfe21432c8dc522671a73 = L.marker(
+                [53.0252547, 18.6254707],
+                {}
+            ).addTo(map_4b122878cce2f19458c11085bb87d1df);
+        
+    
+            var icon_be0836a949874d9d378a6687ceb43f7c = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "red", "prefix": "glyphicon"}
+            );
+            marker_a647386b569bfe21432c8dc522671a73.setIcon(icon_be0836a949874d9d378a6687ceb43f7c);
+        
+    
+        var popup_5df42ae5129c459050965e59a89990d4 = L.popup({"maxWidth": 150, "minWidth": 150});
+
+        
+            
+                var html_999b45fad9c39764236bd4f2ca26f6f5 = $(`<div id="html_999b45fad9c39764236bd4f2ca26f6f5" style="width: 100.0%; height: 100.0%;">published at: 2022-04-13 - title: Product Owner - Cloud Services - company name: Allegro - country code: PL - city: Torun - company size: 5000 - experience level: mid</div>`)[0];
+                popup_5df42ae5129c459050965e59a89990d4.setContent(html_999b45fad9c39764236bd4f2ca26f6f5);
+            
+        
+
+        marker_a647386b569bfe21432c8dc522671a73.bindPopup(popup_5df42ae5129c459050965e59a89990d4)
+        ;
+
+        
+    
+    
+            marker_a647386b569bfe21432c8dc522671a73.bindTooltip(
+                `<div>
+                     Click me!
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_15adb7c7365e394ca3a22dfd67dd9521 = L.marker(
+                [52.4001319, 16.9207913],
+                {}
+            ).addTo(map_4b122878cce2f19458c11085bb87d1df);
+        
+    
+            var icon_2fe2ee6ace4c0bd4b2bc84c44ab7f0da = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "red", "prefix": "glyphicon"}
+            );
+            marker_15adb7c7365e394ca3a22dfd67dd9521.setIcon(icon_2fe2ee6ace4c0bd4b2bc84c44ab7f0da);
+        
+    
+        var popup_be5af7cb35452c0fa5e59c2601257f76 = L.popup({"maxWidth": 150, "minWidth": 150});
+
+        
+            
+                var html_c7e625e6972260244f46e767fab2b6f9 = $(`<div id="html_c7e625e6972260244f46e767fab2b6f9" style="width: 100.0%; height: 100.0%;">published at: 2022-04-13 - title: Product Owner - Cloud Services - company name: Allegro - country code: PL - city: Poznan - company size: 5000 - experience level: mid</div>`)[0];
+                popup_be5af7cb35452c0fa5e59c2601257f76.setContent(html_c7e625e6972260244f46e767fab2b6f9);
+            
+        
+
+        marker_15adb7c7365e394ca3a22dfd67dd9521.bindPopup(popup_be5af7cb35452c0fa5e59c2601257f76)
+        ;
+
+        
+    
+    
+            marker_15adb7c7365e394ca3a22dfd67dd9521.bindTooltip(
+                `<div>
+                     Click me!
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_3fc2d708c1d0adba8c59d468eae74c48 = L.marker(
+                [52.2302091, 21.0113922],
+                {}
+            ).addTo(map_4b122878cce2f19458c11085bb87d1df);
+        
+    
+            var icon_e123969fcdd541c56febc76aef9096e7 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "red", "prefix": "glyphicon"}
+            );
+            marker_3fc2d708c1d0adba8c59d468eae74c48.setIcon(icon_e123969fcdd541c56febc76aef9096e7);
+        
+    
+        var popup_1af923c2fd9bc8b54160279e5bf5a65e = L.popup({"maxWidth": 150, "minWidth": 150});
+
+        
+            
+                var html_c3c6a2dfcdf08efab5bf872ee65413bf = $(`<div id="html_c3c6a2dfcdf08efab5bf872ee65413bf" style="width: 100.0%; height: 100.0%;">published at: 2022-04-13 - title: Remote Node.js Developer - company name: AppTailors - country code: PL - city: Warszawa - company size: 50 - experience level: mid</div>`)[0];
+                popup_1af923c2fd9bc8b54160279e5bf5a65e.setContent(html_c3c6a2dfcdf08efab5bf872ee65413bf);
+            
+        
+
+        marker_3fc2d708c1d0adba8c59d468eae74c48.bindPopup(popup_1af923c2fd9bc8b54160279e5bf5a65e)
+        ;
+
+        
+    
+    
+            marker_3fc2d708c1d0adba8c59d468eae74c48.bindTooltip(
+                `<div>
+                     Click me!
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_28064139c7da3d12ac9a5af9aa863392 = L.marker(
+                [52.4093634, 16.9317991],
+                {}
+            ).addTo(map_4b122878cce2f19458c11085bb87d1df);
+        
+    
+            var icon_239a5781f7231f8bed2aad5752ff7b7d = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "red", "prefix": "glyphicon"}
+            );
+            marker_28064139c7da3d12ac9a5af9aa863392.setIcon(icon_239a5781f7231f8bed2aad5752ff7b7d);
+        
+    
+        var popup_9c0c2b677133e84f34149a4782e3af41 = L.popup({"maxWidth": 150, "minWidth": 150});
+
+        
+            
+                var html_f952da50675653d764084e4133eaaef9 = $(`<div id="html_f952da50675653d764084e4133eaaef9" style="width: 100.0%; height: 100.0%;">published at: 2022-04-13 - title: Senior Automation Engineer - company name: Adaptiq - country code: PL - city: Poznan - company size: 100 - experience level: senior</div>`)[0];
+                popup_9c0c2b677133e84f34149a4782e3af41.setContent(html_f952da50675653d764084e4133eaaef9);
+            
+        
+
+        marker_28064139c7da3d12ac9a5af9aa863392.bindPopup(popup_9c0c2b677133e84f34149a4782e3af41)
+        ;
+
+        
+    
+    
+            marker_28064139c7da3d12ac9a5af9aa863392.bindTooltip(
+                `<div>
+                     Click me!
+                 </div>`,
+                {"sticky": true}
+            );
+        
+</script>
+</html>
